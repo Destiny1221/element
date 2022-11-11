@@ -1,6 +1,17 @@
 import navConfig from './nav.config';
 import langs from './i18n/route';
 
+/**
+ * require.ensure实现webpack按需加载，避免将所有文件打包进一个bundle.js中导致文件过大
+ * 语法：
+ * require.ensure(
+ *    dependencies:String[],// 依赖
+ *    callback:function(require),//回调，所有依赖都加载完了会执行这个回调函数
+ *    errorCalback:function(error),//错误回调
+ *    chunkName:string// chunk名称
+ * )
+ * 可以被es6的import取代
+ */
 const LOAD_MAP = {
   'zh-CN': name => {
     return r => require.ensure([], () =>
