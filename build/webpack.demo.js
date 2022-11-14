@@ -7,6 +7,7 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+// 一键在编辑器中打开组件的源码文件，提升开发效率
 const launchEditorMiddleware = require('launch-editor-middleware');
 
 const config = require('./config');

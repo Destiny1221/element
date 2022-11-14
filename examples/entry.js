@@ -1,9 +1,12 @@
 import Vue from 'vue';
 import entry from './app';
 import VueRouter from 'vue-router';
+// 引入组件库，main是别名，在/build/config.js中有配置
 import Element from 'main/index.js';
 import hljs from 'highlight.js';
+// 路由配置
 import routes from './route.config';
+// 官网项目的一些组件
 import demoBlock from './components/demo-block';
 import MainFooter from './components/footer';
 import MainHeader from './components/header';
@@ -11,10 +14,12 @@ import SideNav from './components/side-nav';
 import FooterNav from './components/footer-nav';
 import title from './i18n/title';
 
+// 组件库演示
 import 'packages/theme-chalk/src/index.scss';
 import './demo-styles/index.scss';
 import './assets/styles/common.css';
 import './assets/styles/fonts/style.css';
+// 将icon信息挂在到Vue原型上，在官网的icon图标页面展示所有icon
 import icon from './icon.json';
 
 Vue.use(Element);

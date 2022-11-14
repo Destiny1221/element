@@ -1,4 +1,6 @@
+// 根据路由配置自动生成官网路由
 import navConfig from './nav.config';
+// 支持所有语言
 import langs from './i18n/route';
 
 /**
@@ -39,6 +41,7 @@ const load = function(lang, path) {
   return LOAD_MAP[lang](path);
 };
 
+// 加载官网页面各个组件的markdown文件
 const LOAD_DOCS_MAP = {
   'zh-CN': path => {
     return r => require.ensure([], () =>
@@ -68,36 +71,57 @@ const loadDocs = function(lang, path) {
 
 const registerRoute = (navConfig) => {
   let route = [];
+  // 遍历配置，生成四种语言的组件路由配置,lang表示语言，比如zh-CN
   Object.keys(navConfig).forEach((lang, index) => {
+    // 指定语言的配置，比如 lang = zh-CN，navs 就是所有配置项都是中文写的
     let navs = navConfig[lang];
+    // 组件页面 lang 语言的路由配置
     route.push({
       path: `/${ lang }/component`,
       redirect: `/${ lang }/component/installation`,
+      // 按需引入./pages/zh-CN/components.vue组件
       component: load(lang, 'component'),
+      // 组件页的所有子路由，即各个组件，放这里，最后的路由就是 /zh-CN/component/comp-path
       children: []
     });
     navs.forEach(nav => {
       if (nav.href) return;
       if (nav.groups) {
+        // 该项为组件
         nav.groups.forEach(group => {
           group.list.forEach(nav => {
             addRoute(nav, lang, index);
           });
         });
       } else if (nav.children) {
+        // 该项为开发指南
         nav.children.forEach(nav => {
           addRoute(nav, lang, index);
         });
       } else {
+        // 其他，比如更新日志等
         addRoute(nav, lang, index);
       }
     });
   });
+  /**
+   * 生成子路由配置，并填充到 children 中
+   * @param {*} page 
+   * 格式为{
+   *   name?:string 开发指南、更新日志等具有该属性
+   *   path:string
+   *   title?:string // 组件固有
+   * }
+   * @param {*} lang 
+   * @param {*} index 
+   */
   function addRoute(page, lang, index) {
+    // 根据 path 决定是加载vue文件还是加载markdown文件
     const component = page.path === '/changelog'
       ? load(lang, 'changelog')
       : loadDocs(lang, page.path);
     let child = {
+      // 去除路由配置中path的/，形成符合子路由的形式，比如：/table->table
       path: page.path.slice(1),
       meta: {
         title: page.title || page.name,
@@ -107,15 +131,17 @@ const registerRoute = (navConfig) => {
       name: 'component-' + lang + (page.title || page.name),
       component: component.default || component
     };
-
+    // 将子路由添加在上面的children中
     route[index].children.push(child);
   }
 
   return route;
 };
 
+// 得到组件页面所有侧边栏的路由配置
 let route = registerRoute(navConfig);
 
+// 官网配置指南、主题、资源、首页路由配置
 const generateMiscRoutes = function(lang) {
   let guideRoute = {
     path: `/${ lang }/guide`, // 指南
@@ -179,6 +205,7 @@ route.push({
   component: require('./play/index.vue')
 });
 
+// 设置语言格式，默认采用英文
 let userLanguage = localStorage.getItem('ELEMENT_LANGUAGE') || window.navigator.language || 'en-US';
 let defaultPath = '/en-US';
 if (userLanguage.indexOf('zh-') !== -1) {
