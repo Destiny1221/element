@@ -1,4 +1,8 @@
+/** 命名空间 **/ 
 $namespace: 'el';
+/** B和E之间的连接符 **/ 
 $element-separator: '__';
+/** E和M之间的连接符 **/ 
 $modifier-separator: '--';
+/** 状态前缀，比如is-checked **/ 
 $state-prefix: 'is-';
